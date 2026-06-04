@@ -59,6 +59,7 @@
                     ${renderSummary("bc-panel bc-summary")}
                 </div>
                 <div class="bc-floating-summary" aria-live="polite">
+                    <button class="bc-summary-toggle" type="button" data-bc-summary-toggle aria-expanded="true" aria-label="Collapse order summary">&gt;</button>
                     ${renderSummary("bc-panel bc-summary bc-summary--floating")}
                 </div>
             </section>
@@ -132,6 +133,17 @@
         document.querySelectorAll("[data-bc-copy]").forEach((button) => {
             button.addEventListener("click", copyOrder);
         });
+        document.querySelectorAll("[data-bc-summary-toggle]").forEach((button) => {
+            button.addEventListener("click", () => {
+                const summary = button.closest(".bc-floating-summary");
+                if (!summary) return;
+
+                const isCollapsed = summary.classList.toggle("is-collapsed");
+                button.setAttribute("aria-expanded", String(!isCollapsed));
+                button.setAttribute("aria-label", isCollapsed ? "Expand order summary" : "Collapse order summary");
+                button.textContent = isCollapsed ? "<" : ">";
+            });
+        });
         document.querySelectorAll("[data-bc-region]").forEach((button) => {
             button.addEventListener("click", () => {
                 const region = button.dataset.bcRegion;
@@ -168,7 +180,7 @@
 
     function syncFloatingSummaryPosition() {
         const placeholder = document.querySelector(".bc-floating-placeholder");
-        if (!placeholder || !window.matchMedia("(min-width: 1180px)").matches) return;
+        if (!placeholder || !window.matchMedia("(min-width: 900px)").matches) return;
 
         const rect = placeholder.getBoundingClientRect();
         document.documentElement.style.setProperty("--bc-dock-left", `${Math.round(rect.left)}px`);

@@ -89,21 +89,27 @@
 }
 
 .bc-floating-summary {
-    bottom: 14px;
-    left: 14px;
+    bottom: auto;
+    left: auto;
     opacity: 0;
     pointer-events: none;
     position: fixed;
     right: 14px;
-    transform: translateY(calc(100% + 24px));
+    top: 108px;
+    transform: translateX(calc(100% + 64px));
     transition: opacity 0.22s ease, transform 0.22s ease;
+    width: min(340px, calc(100vw - 72px));
     z-index: 8800;
 }
 
 body.bc-menu-active .bc-floating-summary {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0);
+    transform: translateX(0);
+}
+
+body.bc-menu-active .bc-floating-summary.is-collapsed {
+    transform: translateX(calc(100% + 14px));
 }
 
 .bc-menu-layout {
@@ -122,9 +128,34 @@ body.bc-menu-active .bc-floating-summary {
 
 .bc-summary--floating {
     box-shadow: 0 18px 48px rgba(21, 49, 66, 0.22);
-    max-height: min(176px, calc(100vh - 120px));
+    max-height: calc(100vh - 122px);
     overflow: auto;
-    padding: 12px 18px;
+    padding: 18px;
+}
+
+.bc-summary-toggle {
+    align-items: center;
+    background: #0c3f5c;
+    border: 2px solid #ffffff;
+    border-radius: 8px 0 0 8px;
+    box-shadow: 0 8px 20px rgba(21, 49, 66, 0.2);
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 1.6rem;
+    font-weight: 900;
+    height: 52px;
+    justify-content: center;
+    left: -44px;
+    line-height: 1;
+    position: absolute;
+    top: 16px;
+    width: 44px;
+}
+
+.bc-summary-toggle:focus-visible {
+    outline: 3px solid #ffb800;
+    outline-offset: 2px;
 }
 
 .bc-summary-head {
@@ -910,7 +941,7 @@ body.bc-menu-active .bc-floating-summary {
 }
 
 .bowl-builder .bc-floating-summary .bc-total-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     margin-bottom: 10px;
 }
@@ -930,7 +961,7 @@ body.bc-menu-active .bc-floating-summary {
 }
 
 .bowl-builder .bc-floating-summary .bc-selected-list {
-    max-height: 54px;
+    max-height: 138px;
     overflow: auto;
     padding-right: 3px;
 }
@@ -965,7 +996,7 @@ body.bc-menu-active .bc-floating-summary {
 }
 
 .bc-floating-summary .bc-total-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     margin-bottom: 10px;
 }
@@ -985,7 +1016,7 @@ body.bc-menu-active .bc-floating-summary {
 }
 
 .bc-floating-summary .bc-selected-list {
-    max-height: 44px;
+    max-height: 138px;
     overflow: auto;
     padding-right: 3px;
 }
@@ -1051,7 +1082,7 @@ body.bc-menu-active .bc-floating-summary {
     color: #fff;
 }
 
-@media screen and (min-width: 1180px) {
+@media screen and (min-width: 900px) {
     .bc-menu-layout {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 306px;
@@ -1091,6 +1122,10 @@ body.bc-menu-active .bc-floating-summary {
         transform: translateX(0);
     }
 
+    body.bc-menu-active .bc-floating-summary.is-collapsed {
+        transform: translateX(calc(100vw - var(--bc-dock-left, 0px)));
+    }
+
     .bowl-builder .bc-floating-summary .bc-total-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -1118,15 +1153,17 @@ body.bc-menu-active .bc-floating-summary {
 
 @media screen and (max-width: 560px) {
     .bc-floating-summary {
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
+        bottom: auto;
+        left: auto;
+        right: 8px;
+        top: 78px;
+        width: min(310px, calc(100vw - 60px));
     }
 
     .bc-summary--floating {
         display: flex;
         flex-direction: column;
-        max-height: 210px;
+        max-height: calc(100vh - 90px);
         padding: 12px 14px;
     }
 
@@ -1142,7 +1179,7 @@ body.bc-menu-active .bc-floating-summary {
     }
 
     .bc-floating-summary .bc-selected-list {
-        max-height: 48px;
+        max-height: 110px;
         order: 3;
     }
 
@@ -1151,7 +1188,8 @@ body.bc-menu-active .bc-floating-summary {
     }
 
     .bc-floating-summary .bc-total-grid {
-        display: none;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .bc-floating-summary .bc-price-line {
@@ -1173,7 +1211,7 @@ body.bc-menu-active .bc-floating-summary {
     }
 
     .bowl-builder .bc-floating-summary .bc-total-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .bowl-builder .bc-floating-summary .bc-total-card {
