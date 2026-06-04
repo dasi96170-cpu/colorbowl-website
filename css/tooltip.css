@@ -12,8 +12,8 @@
     width: 220px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    transform: translateY(15px);
+    transition: none;
+    transform: none;
     color: #333;
     font-family: 'Inter', 'Noto Sans TC', sans-serif;
     left: 0;
@@ -23,7 +23,7 @@
 .ingredient-tooltip.show {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: none;
 }
 
 .tt-header {
@@ -103,12 +103,6 @@
     height: 100%;
     object-fit: contain;
     display: block;
-    opacity: 1;
-    transition: opacity 0.12s ease;
-}
-
-.tt-real-image-wrapper.is-loading .tt-real-image {
-    opacity: 0.45;
 }
 
 /* Base item styling for hover cursor */

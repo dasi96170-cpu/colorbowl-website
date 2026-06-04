@@ -56,25 +56,37 @@ window.nutritionDatabase = {
     const realImageOverrides = {
         "images/icons/protein_tuna.png": "images/real/protein_seared_tuna.jpg"
     };
-    const imageCache = new Map();
-    let activeRenderId = 0;
-
+    preloadRealIngredientImages();
     document.addEventListener("DOMContentLoaded", initIngredientTooltips);
+
+    function preloadRealIngredientImages() {
+        const loadedPaths = new Set();
+
+        Object.values(window.nutritionDatabase || {}).forEach((data) => {
+            const realImage = data.realImage || getRealImageFromIcon(data.image);
+            if (!realImage || loadedPaths.has(realImage)) return;
+
+            loadedPaths.add(realImage);
+            const image = new Image();
+            image.src = realImage;
+        });
+    }
 
     function initIngredientTooltips() {
         const targets = document.querySelectorAll(".sv_base h4, .sv_dishes b");
         if (!targets.length || !window.nutritionDatabase) return;
 
-        const tooltip = createTooltip();
-        let hideTimer = 0;
-
-        tooltip.addEventListener("mouseenter", () => window.clearTimeout(hideTimer));
-        tooltip.addEventListener("mouseleave", () => {
-            hideTimer = window.setTimeout(() => hideTooltip(tooltip), 120);
-        });
-
         targets.forEach((target) => {
+            const tooltip = createTooltip();
+            let hideTimer = 0;
+
             target.classList.add("has-tooltip");
+            populateTooltip(tooltip, target);
+
+            tooltip.addEventListener("mouseenter", () => window.clearTimeout(hideTimer));
+            tooltip.addEventListener("mouseleave", () => {
+                hideTimer = window.setTimeout(() => hideTooltip(tooltip), 40);
+            });
 
             target.addEventListener("mouseenter", (event) => {
                 window.clearTimeout(hideTimer);
@@ -86,7 +98,7 @@ window.nutritionDatabase = {
             });
 
             target.addEventListener("mouseleave", () => {
-                hideTimer = window.setTimeout(() => hideTooltip(tooltip), 120);
+                hideTimer = window.setTimeout(() => hideTooltip(tooltip), 40);
             });
 
             target.addEventListener("touchstart", (event) => {
@@ -97,49 +109,45 @@ window.nutritionDatabase = {
         });
 
         document.addEventListener("touchstart", (event) => {
-            if (!event.target.closest(".has-tooltip") && !event.target.closest("#ingredientTooltip")) {
-                hideTooltip(tooltip);
+            if (!event.target.closest(".has-tooltip") && !event.target.closest(".ingredient-tooltip")) {
+                document.querySelectorAll(".ingredient-tooltip.show").forEach(hideTooltip);
             }
         }, { passive: true });
     }
 
     function createTooltip() {
-        const existing = document.getElementById("ingredientTooltip");
-        if (existing) return existing;
-
         const wrapper = document.createElement("div");
-        wrapper.id = "ingredientTooltip";
         wrapper.className = "ingredient-tooltip";
         wrapper.innerHTML = `
             <div class="tt-header">
                 <div class="tt-image-wrapper">
-                    <img id="ttImg" class="tt-image" src="images/placeholder.png" alt="">
+                    <img data-tt="icon" class="tt-image" src="images/placeholder.png" alt="">
                 </div>
-                <h4 id="ttTitle" class="tt-title">食材</h4>
+                <h4 data-tt="title" class="tt-title">食材</h4>
             </div>
-            <div id="ttRealImgWrapper" class="tt-real-image-wrapper" style="display: none;">
-                <img id="ttRealImg" class="tt-real-image" src="" alt="">
+            <div data-tt="real-wrapper" class="tt-real-image-wrapper" style="display: none;">
+                <img data-tt="real-image" class="tt-real-image" src="" alt="">
             </div>
             <div class="tt-nutrition">
                 <div class="tt-row">
                     <span class="tt-label">份量</span>
-                    <span id="ttServing" class="tt-value">--</span>
+                    <span data-tt="serving" class="tt-value">--</span>
                 </div>
                 <div class="tt-row">
                     <span class="tt-label">熱量</span>
-                    <span id="ttCal" class="tt-value">-- kcal</span>
+                    <span data-tt="calories" class="tt-value">-- kcal</span>
                 </div>
                 <div class="tt-row">
                     <span class="tt-label">蛋白質</span>
-                    <span id="ttPro" class="tt-value">-- g</span>
+                    <span data-tt="protein" class="tt-value">-- g</span>
                 </div>
                 <div class="tt-row">
                     <span class="tt-label">碳水</span>
-                    <span id="ttCarb" class="tt-value">-- g</span>
+                    <span data-tt="carbs" class="tt-value">-- g</span>
                 </div>
                 <div class="tt-row">
                     <span class="tt-label">脂肪</span>
-                    <span id="ttFat" class="tt-value">-- g</span>
+                    <span data-tt="fat" class="tt-value">-- g</span>
                 </div>
             </div>
         `;
@@ -147,47 +155,36 @@ window.nutritionDatabase = {
         return wrapper;
     }
 
-    function showTooltip(tooltip, target, event) {
-        const renderId = ++activeRenderId;
+    function populateTooltip(tooltip, target) {
         const name = cleanIngredientName(target.textContent || "");
         const data = findNutrition(name);
         const iconImage = data.image || "images/placeholder.png";
 
-        tooltip.querySelector("#ttTitle").textContent = name || "食材";
-        tooltip.querySelector("#ttImg").src = iconImage;
-        tooltip.querySelector("#ttServing").textContent = data.serving || "--";
-        tooltip.querySelector("#ttCal").textContent = data.calories || "-- kcal";
-        tooltip.querySelector("#ttPro").textContent = data.protein || "-- g";
-        tooltip.querySelector("#ttCarb").textContent = data.carbs || "-- g";
-        tooltip.querySelector("#ttFat").textContent = data.fat || "-- g";
+        tooltip.querySelector('[data-tt="title"]').textContent = name || "食材";
+        tooltip.querySelector('[data-tt="icon"]').src = iconImage;
+        tooltip.querySelector('[data-tt="serving"]').textContent = data.serving || "--";
+        tooltip.querySelector('[data-tt="calories"]').textContent = data.calories || "-- kcal";
+        tooltip.querySelector('[data-tt="protein"]').textContent = data.protein || "-- g";
+        tooltip.querySelector('[data-tt="carbs"]').textContent = data.carbs || "-- g";
+        tooltip.querySelector('[data-tt="fat"]').textContent = data.fat || "-- g";
 
         const realImage = data.realImage || getRealImageFromIcon(data.image);
-        const realWrapper = tooltip.querySelector("#ttRealImgWrapper");
-        const realImg = tooltip.querySelector("#ttRealImg");
+        const realWrapper = tooltip.querySelector('[data-tt="real-wrapper"]');
+        const realImg = tooltip.querySelector('[data-tt="real-image"]');
         if (realImage) {
-            // Show the current icon immediately so the previous ingredient never lingers.
-            realImg.src = iconImage;
+            realImg.src = realImage;
             realImg.alt = name;
             realWrapper.style.display = "flex";
-            realWrapper.classList.add("is-loading");
-
-            preloadImage(realImage)
-                .then((loadedImage) => {
-                    if (renderId !== activeRenderId) return;
-                    realImg.src = loadedImage;
-                    realWrapper.classList.remove("is-loading");
-                    positionTooltip(tooltip, target);
-                })
-                .catch(() => {
-                    if (renderId !== activeRenderId) return;
-                    realWrapper.classList.remove("is-loading");
-                });
         } else {
             realImg.removeAttribute("src");
-            realWrapper.classList.remove("is-loading");
             realWrapper.style.display = "none";
         }
+    }
 
+    function showTooltip(tooltip, target, event) {
+        document.querySelectorAll(".ingredient-tooltip.show").forEach((openTooltip) => {
+            if (openTooltip !== tooltip) hideTooltip(openTooltip);
+        });
         tooltip.classList.add("show");
         positionTooltip(tooltip, target, event);
     }
@@ -213,23 +210,7 @@ window.nutritionDatabase = {
     }
 
     function hideTooltip(tooltip) {
-        activeRenderId += 1;
         tooltip.classList.remove("show");
-    }
-
-    function preloadImage(src) {
-        if (imageCache.has(src)) return imageCache.get(src);
-
-        const request = new Promise((resolve, reject) => {
-            const image = new Image();
-            image.onload = () => resolve(src);
-            image.onerror = reject;
-            image.src = src;
-        });
-
-        imageCache.set(src, request);
-        request.catch(() => imageCache.delete(src));
-        return request;
     }
 
     function findNutrition(name) {
