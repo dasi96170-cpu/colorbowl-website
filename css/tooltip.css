@@ -1,0 +1,118 @@
+/* css/tooltip.css */
+.ingredient-tooltip {
+    position: absolute;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    width: 220px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    transform: translateY(15px);
+    color: #333;
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    left: 0;
+    top: 0;
+}
+
+.ingredient-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.tt-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    padding-bottom: 10px;
+}
+
+.tt-image-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 12px;
+    flex-shrink: 0;
+    background: #f8f8f8;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+}
+
+.tt-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tt-title {
+    font-weight: 700;
+    font-size: 1.1em;
+    color: #1a1a1a;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.tt-nutrition {
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.tt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    padding: 2px 0;
+}
+
+.tt-row:not(:last-child) {
+    border-bottom: 1px dashed rgba(0,0,0,0.05);
+}
+
+.tt-label {
+    color: #777;
+    font-weight: 500;
+}
+
+.tt-value {
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.tt-real-image-wrapper {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    background: #f8f9fa;
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tt-real-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* Base item styling for hover cursor */
+.has-tooltip {
+    cursor: help;
+    position: relative;
+    display: inline-block;
+    transition: color 0.2s ease;
+}
+
+.has-tooltip:hover {
+    color: #007bff; /* slight color change on hover */
+}
