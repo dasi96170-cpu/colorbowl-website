@@ -56,6 +56,8 @@ window.nutritionDatabase = {
     const realImageOverrides = {
         "images/icons/protein_tuna.png": "images/real/protein_seared_tuna.jpg"
     };
+    const imageCache = new Map();
+    let activeRenderId = 0;
 
     document.addEventListener("DOMContentLoaded", initIngredientTooltips);
 
@@ -146,11 +148,13 @@ window.nutritionDatabase = {
     }
 
     function showTooltip(tooltip, target, event) {
+        const renderId = ++activeRenderId;
         const name = cleanIngredientName(target.textContent || "");
         const data = findNutrition(name);
+        const iconImage = data.image || "images/placeholder.png";
 
         tooltip.querySelector("#ttTitle").textContent = name || "食材";
-        tooltip.querySelector("#ttImg").src = data.image || "images/placeholder.png";
+        tooltip.querySelector("#ttImg").src = iconImage;
         tooltip.querySelector("#ttServing").textContent = data.serving || "--";
         tooltip.querySelector("#ttCal").textContent = data.calories || "-- kcal";
         tooltip.querySelector("#ttPro").textContent = data.protein || "-- g";
@@ -161,11 +165,26 @@ window.nutritionDatabase = {
         const realWrapper = tooltip.querySelector("#ttRealImgWrapper");
         const realImg = tooltip.querySelector("#ttRealImg");
         if (realImage) {
-            realImg.src = realImage;
+            // Show the current icon immediately so the previous ingredient never lingers.
+            realImg.src = iconImage;
             realImg.alt = name;
             realWrapper.style.display = "flex";
+            realWrapper.classList.add("is-loading");
+
+            preloadImage(realImage)
+                .then((loadedImage) => {
+                    if (renderId !== activeRenderId) return;
+                    realImg.src = loadedImage;
+                    realWrapper.classList.remove("is-loading");
+                    positionTooltip(tooltip, target);
+                })
+                .catch(() => {
+                    if (renderId !== activeRenderId) return;
+                    realWrapper.classList.remove("is-loading");
+                });
         } else {
             realImg.removeAttribute("src");
+            realWrapper.classList.remove("is-loading");
             realWrapper.style.display = "none";
         }
 
@@ -194,7 +213,23 @@ window.nutritionDatabase = {
     }
 
     function hideTooltip(tooltip) {
+        activeRenderId += 1;
         tooltip.classList.remove("show");
+    }
+
+    function preloadImage(src) {
+        if (imageCache.has(src)) return imageCache.get(src);
+
+        const request = new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => resolve(src);
+            image.onerror = reject;
+            image.src = src;
+        });
+
+        imageCache.set(src, request);
+        request.catch(() => imageCache.delete(src));
+        return request;
     }
 
     function findNutrition(name) {
