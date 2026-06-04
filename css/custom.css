@@ -3933,8 +3933,42 @@ body.contact_page .note{    display: grid;}
 .fa-facebook-f::before { content: "FB"; font-size: 0.76em; }
 .fa-line::before { content: "LINE"; font-size: 0.62em; }
 .fa-instagram::before { content: "IG"; font-size: 0.76em; }
-.fa-lightbulb::before { content: "INFO"; font-size: 0.58em; }
-.fa-xmark::before { content: "X"; font-size: 0.8em; }
+.linksBtn {
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 8px 18px rgba(23, 61, 52, 0.24);
+    height: 48px;
+    width: 48px;
+}
+
+.fa-lightbulb::before {
+    background: none !important;
+    color: #ffffff;
+    content: "+" !important;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    font-weight: 400;
+    height: auto !important;
+    line-height: 1;
+    width: auto !important;
+}
+
+.fa-xmark::before {
+    background: none !important;
+    color: #ffffff;
+    content: "\00d7" !important;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    font-weight: 400;
+    height: auto !important;
+    line-height: 1;
+    width: auto !important;
+}
+
+.linksBtn:hover .fa-lightbulb::before,
+.linksBtn:hover .fa-xmark::before {
+    color: #173D34;
+}
 .fa-arrow-right::before,
 .fa-right-to-bracket::before,
 .fa-right-from-bracket::before { content: ">"; }

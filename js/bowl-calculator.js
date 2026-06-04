@@ -43,20 +43,7 @@
         return `
             <section id="bowlCalculator" class="bowl-calculator bowl-builder" aria-label="彩碗點餐整理">
                 <div class="bc-shell">
-                    <div class="bc-panel">
-                        <span class="bc-kicker">我的彩碗</span>
-                        <h2 class="bc-title">自己選，網站幫你整理</h2>
-                        <p class="bc-copy">點選下方菜單食材，這裡會同步整理目前選擇與營養估算。此功能只做紀錄與估算，不會自動替你搭配。</p>
-                        <div class="bc-guide">
-                            ${Object.entries(groupConfig).map(([key, config]) => `
-                                <div class="bc-guide-card">
-                                    <strong>${config.label}<span data-bc-count="${key}"> 0/${config.max}</span></strong>
-                                    <span>${config.hint}</span>
-                                </div>
-                            `).join("")}
-                        </div>
-                    </div>
-                    ${renderSummary("bc-panel bc-summary")}
+                    ${renderSummary("bc-panel bc-summary bc-summary--primary")}
                 </div>
                 <div class="bc-floating-summary" aria-live="polite">
                     <button class="bc-summary-toggle" type="button" data-bc-summary-toggle aria-expanded="true" aria-label="Collapse order summary">&gt;</button>
@@ -237,6 +224,8 @@
         const container = tag.closest("li") || tag.parentElement;
         if (!container || container.querySelector(`[data-bc-button="${item.id}"]`)) return;
 
+        container.classList.add("bc-selectable-item");
+
         const button = document.createElement("button");
         button.type = "button";
         button.className = "bc-add-button";
@@ -362,6 +351,7 @@
     function updateSelectedList(pickedItems) {
         if (!pickedItems.length) {
             setHtml("[data-bc-selected]", '<p class="bc-empty">還沒選食材。從下方菜單按「加入」開始整理你的彩碗。</p>');
+            document.dispatchEvent(new CustomEvent("colorbowl:summary-updated"));
             return;
         }
 
@@ -375,8 +365,10 @@
                     <div>
                         ${items.map((item) => `
                             <span class="bc-chip">
-                                ${item.image ? `<img src="${item.image}" alt="">` : ""}
-                                ${escapeHtml(item.label)}${getItemMultiplier(item) === 0.5 ? "（各半）" : ""}
+                                <span class="bc-chip-target" data-ingredient-tooltip="${escapeHtml(item.name)}">
+                                    ${item.image ? `<img src="${item.image}" alt="">` : ""}
+                                    ${escapeHtml(item.label)}${getItemMultiplier(item) === 0.5 ? "（各半）" : ""}
+                                </span>
                             </span>
                         `).join("")}
                     </div>
@@ -385,6 +377,7 @@
         }).join("");
 
         setHtml("[data-bc-selected]", html);
+        document.dispatchEvent(new CustomEvent("colorbowl:summary-updated"));
     }
 
     function updateCounts() {

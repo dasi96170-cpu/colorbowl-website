@@ -58,6 +58,7 @@ window.nutritionDatabase = {
     };
     preloadRealIngredientImages();
     document.addEventListener("DOMContentLoaded", initIngredientTooltips);
+    document.addEventListener("colorbowl:summary-updated", initIngredientTooltips);
 
     function preloadRealIngredientImages() {
         const loadedPaths = new Set();
@@ -73,14 +74,20 @@ window.nutritionDatabase = {
     }
 
     function initIngredientTooltips() {
-        const targets = document.querySelectorAll(".sv_base h4, .sv_dishes b");
+        document.querySelectorAll('.ingredient-tooltip[data-dynamic="true"]').forEach((tooltip) => tooltip.remove());
+
+        const targets = document.querySelectorAll(".sv_base h4, .sv_dishes b, [data-ingredient-tooltip]");
         if (!targets.length || !window.nutritionDatabase) return;
 
         targets.forEach((target) => {
+            if (target.dataset.tooltipReady === "true") return;
+
             const tooltip = createTooltip();
             let hideTimer = 0;
 
+            target.dataset.tooltipReady = "true";
             target.classList.add("has-tooltip");
+            if (target.hasAttribute("data-ingredient-tooltip")) tooltip.dataset.dynamic = "true";
             populateTooltip(tooltip, target);
 
             tooltip.addEventListener("mouseenter", () => window.clearTimeout(hideTimer));
@@ -156,7 +163,7 @@ window.nutritionDatabase = {
     }
 
     function populateTooltip(tooltip, target) {
-        const name = cleanIngredientName(target.textContent || "");
+        const name = cleanIngredientName(target.dataset.ingredientTooltip || target.textContent || "");
         const data = findNutrition(name);
         const iconImage = data.image || "images/placeholder.png";
 
