@@ -46,7 +46,6 @@
                     ${renderSummary("bc-panel bc-summary bc-summary--primary")}
                 </div>
                 <div class="bc-floating-summary" aria-live="polite">
-                    <button class="bc-summary-toggle" type="button" data-bc-summary-toggle aria-expanded="true" aria-label="Collapse order summary">&gt;</button>
                     ${renderSummary("bc-panel bc-summary bc-summary--floating")}
                 </div>
             </section>
@@ -105,10 +104,6 @@
                 <div class="bc-selected-list" data-bc-selected>
                     <p class="bc-empty">還沒選食材。從下方菜單按「加入」開始整理你的彩碗。</p>
                 </div>
-                <div class="bc-actions">
-                    <button class="bc-copy-order" type="button" data-bc-copy>複製點餐內容</button>
-                </div>
-                <p class="bc-message" data-bc-message></p>
             </aside>
         `;
     }
@@ -116,20 +111,6 @@
     function bindBuilderActions() {
         document.querySelectorAll("[data-bc-reset]").forEach((button) => {
             button.addEventListener("click", resetSelection);
-        });
-        document.querySelectorAll("[data-bc-copy]").forEach((button) => {
-            button.addEventListener("click", copyOrder);
-        });
-        document.querySelectorAll("[data-bc-summary-toggle]").forEach((button) => {
-            button.addEventListener("click", () => {
-                const summary = button.closest(".bc-floating-summary");
-                if (!summary) return;
-
-                const isCollapsed = summary.classList.toggle("is-collapsed");
-                button.setAttribute("aria-expanded", String(!isCollapsed));
-                button.setAttribute("aria-label", isCollapsed ? "Expand order summary" : "Collapse order summary");
-                button.textContent = isCollapsed ? "<" : ">";
-            });
         });
         document.querySelectorAll("[data-bc-region]").forEach((button) => {
             button.addEventListener("click", () => {
@@ -167,8 +148,13 @@
         if (!placeholder || !window.matchMedia("(min-width: 900px)").matches) return;
 
         const rect = placeholder.getBoundingClientRect();
+        const primary = document.querySelector(".bc-summary--primary");
+        const primaryRect = primary?.getBoundingClientRect();
+        const alignedTop = primaryRect ? Math.max(0, Math.round(primaryRect.top)) : 108;
+
         document.documentElement.style.setProperty("--bc-dock-left", `${Math.round(rect.left)}px`);
         document.documentElement.style.setProperty("--bc-dock-width", `${Math.round(rect.width)}px`);
+        document.documentElement.style.setProperty("--bc-dock-top", `${alignedTop}px`);
     }
 
     function collectIngredients(menuRoot) {
@@ -512,7 +498,7 @@
     }
 
     function showMessage(message) {
-        setText("[data-bc-message]", message);
+        return;
     }
 
     function setText(selector, text) {

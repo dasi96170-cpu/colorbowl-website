@@ -1686,7 +1686,8 @@ body {
 .footer_info {
     padding-right: 0;
     align-items: center;
-    grid-template-columns: 30% 1fr;
+    grid-template-columns: minmax(440px, 38%) minmax(0, 1fr);
+    gap: 24px;
 }
 
 .copy {
@@ -1722,7 +1723,7 @@ body {
 .footer_info li p {
     color: #173D34;
     font-weight: bold;
-    margin: 0 50px 10px 0;
+    margin: 0 28px 10px 0;
     width: fit-content;
 }
 
@@ -1743,6 +1744,8 @@ body {
     width: 100%;
     display: flex;
     justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .footer_menu a:nth-of-type(1) {
@@ -1753,13 +1756,13 @@ body {
     display: inline-block;
     padding: 10px 7px;
     margin: 0;
-    margin-right: 10px;
     font-size: 14px;
     line-height: 100%;
     color: #fff;
     background: #173D34;
     border: none;
     width: calc(100% / 5 - 10px);
+    min-width: 118px;
     text-align: center;
     transition: all 0.3s cubic-bezier(0.73, 0.08, 0.11, 0.99);
 }
@@ -1771,7 +1774,7 @@ body {
 
 .footer .center {
     position: relative;
-    max-width: 80%;
+    max-width: min(1520px, calc(100% - 40px));
 }
 
 
@@ -3977,19 +3980,19 @@ body.contact_page .note{    display: grid;}
     height: 82px !important;
     max-height: 82px !important;
     opacity: 0;
-    width: 420px !important;
+    width: 460px !important;
 }
 
 .footer_logo a {
     background: url("../images/nav_logo_colorbowl_new.png") center / contain no-repeat;
     display: block;
     height: 82px;
-    max-width: min(420px, 86vw);
-    width: 420px;
+    max-width: min(460px, 86vw);
+    width: 460px;
 }
 
 .footer_logo {
-    max-width: min(420px, 86vw);
+    max-width: min(460px, 86vw);
 }
 @media screen and (max-width: 768px) {
     .nav-brand img {
