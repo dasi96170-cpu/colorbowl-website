@@ -147,11 +147,8 @@
 
         const sync = () => {
             ticking = false;
-            const rect = menuRoot.getBoundingClientRect();
-            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-            const isInMenu = rect.top < viewportHeight - 140 && rect.bottom > 180;
             syncFloatingSummaryPosition();
-            document.body.classList.toggle("bc-menu-active", isInMenu);
+            document.body.classList.add("bc-menu-active");
         };
 
         const requestSync = () => {

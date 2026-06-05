@@ -88,12 +88,12 @@
 .bc-floating-summary {
     bottom: auto;
     left: auto;
-    opacity: 0;
-    pointer-events: none;
+    opacity: 1;
+    pointer-events: auto;
     position: fixed;
     right: 14px;
     top: 108px;
-    transform: translateX(calc(100% + 64px));
+    transform: translateX(0);
     transition: opacity 0.22s ease, transform 0.22s ease;
     width: min(340px, calc(100vw - 72px));
     z-index: 8800;
@@ -912,7 +912,7 @@ body.bc-menu-active .bc-floating-summary.is-collapsed {
 }
 
 .bowl-builder .bc-shell {
-    max-width: 760px !important;
+    max-width: 1040px !important;
     width: calc(100% - 40px);
 }
 
@@ -947,9 +947,9 @@ body.bc-menu-active .bc-floating-summary.is-collapsed {
 }
 
 .bowl-builder .bc-summary--primary .bc-selected-list {
-    max-height: 150px;
-    overflow: auto;
-    padding-right: 4px;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
 }
 
 .bowl-builder .bc-summary--primary .bc-actions,
@@ -1178,10 +1178,14 @@ body.bc-menu-active .bc-floating-summary.is-collapsed {
 }
 
 @media screen and (min-width: 900px) {
+    .bowl-builder .bc-shell {
+        width: calc(100% - 420px);
+    }
+
     .bc-menu-layout {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 306px;
-        gap: 22px;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 26px;
         align-items: start;
     }
 
@@ -1204,12 +1208,12 @@ body.bc-menu-active .bc-floating-summary.is-collapsed {
         position: fixed;
         right: auto;
         top: 108px;
-        transform: translateX(18px);
-        width: var(--bc-dock-width, 306px);
+        transform: translateX(0);
+        width: var(--bc-dock-width, 340px);
     }
 
     .bc-summary--floating {
-        max-height: min(430px, calc(100vh - 120px));
+        max-height: calc(100vh - 120px);
         padding: 18px;
     }
 
@@ -1238,7 +1242,7 @@ body.bc-menu-active .bc-floating-summary.is-collapsed {
     }
 
     .bc-floating-summary .bc-selected-list {
-        max-height: 138px;
+        max-height: 210px;
     }
 
     .bc-floating-summary .bc-actions {
@@ -1262,8 +1266,11 @@ body.bc-menu-active .bc-floating-summary.is-collapsed {
     .bc-floating-summary {
         bottom: auto;
         left: auto;
+        opacity: 1;
+        pointer-events: auto;
         right: 8px;
         top: 78px;
+        transform: translateX(0);
         width: min(310px, calc(100vw - 60px));
     }
 

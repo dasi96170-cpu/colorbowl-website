@@ -3973,12 +3973,37 @@ body.contact_page .note{    display: grid;}
 .fa-right-to-bracket::before,
 .fa-right-from-bracket::before { content: ">"; }
 .footer_logo img {
-    width: auto !important;
-    max-height: 80px !important;
-    display: inline-block;
+    display: block;
+    height: 82px !important;
+    max-height: 82px !important;
+    opacity: 0;
+    width: 420px !important;
+}
+
+.footer_logo a {
+    background: url("../images/nav_logo_colorbowl_new.png") center / contain no-repeat;
+    display: block;
+    height: 82px;
+    max-width: min(420px, 86vw);
+    width: 420px;
+}
+
+.footer_logo {
+    max-width: min(420px, 86vw);
 }
 @media screen and (max-width: 768px) {
     .nav-brand img {
         max-height: 45px !important;
+    }
+
+    .footer_logo a,
+    .footer_logo img {
+        height: 58px !important;
+        max-height: 58px !important;
+        width: 300px !important;
+    }
+
+    .footer_logo {
+        max-width: min(300px, 86vw);
     }
 }

@@ -113,16 +113,7 @@
 
 
     <script>
-      (function () {
-        var introKey = "colorbowlLogoIntroSeen";
-        try {
-          if (sessionStorage.getItem(introKey) === "1") {
-            document.documentElement.classList.add("skip-logo-intro");
-          } else {
-            sessionStorage.setItem(introKey, "1");
-          }
-        } catch (error) {}
-      })();
+      document.documentElement.classList.add("skip-logo-intro");
     </script>
     <!-- NEW LOGO LOADING ANIMATION -->
     <style>
@@ -136,6 +127,9 @@
       }
       .skip-logo-intro [data-animate-in].in-view.wait {
         transition-delay: 0s !important;
+      }
+      .skip-logo-intro #hero-logo-container {
+        display: none !important;
       }
       .skip-logo-intro .pageIndex .header_area .stellarnav .menu-toggle,
       .skip-logo-intro .pageIndex .stellarnav .call-btn-mobile,
@@ -504,17 +498,14 @@ var companyData = '彩碗 ColorBowl Poke || 夏威夷拌飯 || 夏威夷蓋飯 |
          spaceBetween: 50,
          slidesPerView: 1.1,
        },
-       601: {
-         slidesPerView: 2.2,
+		 601: {
+         slidesPerView: 1.5,
        },
        769: {
-         slidesPerView: 2.6,
+         slidesPerView: 1.8,
        },
 		 901: {
-         slidesPerView: 2.6,
-       },
-       1201: {
-         slidesPerView: 2.2,
+         slidesPerView: 2,
        },
 		 1441: {
          slidesPerView: 1.8,
